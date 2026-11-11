@@ -75,8 +75,8 @@ function selectCar(id){
 }
 function finishBoarding(car,bayIndex,count){
  busy=false;
- if(count>=CAPACITY){say('Your '+car.color.name.toLowerCase()+' car is full. Driving away!');const el=$('bays').children[bayIndex];if(el){el.style.transition='transform .45s,opacity .45s';el.style.transform='translateY(-45px) scale(.7)';el.style.opacity='0'}setTimeout(()=>{bays[bayIndex]=null;render();checkProgress()},480)}
- else{say(count+' '+car.color.name.toLowerCase()+' passenger(s) boarded. The car has room for more.');checkProgress()}
+ if(count>0){say('Your '+car.color.name.toLowerCase()+' car is ready. Driving away!');const el=$('bays').children[bayIndex];if(el){el.style.transition='transform .45s,opacity .45s';el.style.transform='translateY(-45px) scale(.7)';el.style.opacity='0'}setTimeout(()=>{bays[bayIndex]=null;render();checkProgress()},480)}
+ else{say('No matching passengers boarded. Choose another colour.');checkProgress()}
 }
 function checkProgress(){
  if(queue.length===0){complete=true;$('dialogTitle').textContent='Level '+level+' complete!';$('dialogText').textContent='All passengers have found their rides. You earned '+score+' points.';$('dialogButton').textContent='Play next level';$('overlay').classList.add('show');$('next').hidden=false;return}
