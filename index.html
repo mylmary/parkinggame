@@ -12,8 +12,8 @@
 .walking-passenger{position:fixed;z-index:50;width:20px;height:32px;display:block;pointer-events:none;transition:transform .68s cubic-bezier(.2,.65,.3,1),opacity .68s ease}
 .walking-passenger .head{position:absolute;top:0;left:3px;width:14px;height:14px;border-radius:50%;background:#e7adbd}
 .walking-passenger .body{position:absolute;top:12px;left:1px;width:18px;height:13px;border-radius:7px 7px 4px 4px;background:#d6a9d0}
-.walking-passenger .legs{position:absolute;top:24px;left:5px;width:4px;height:8px;border-radius:3px;background:#88738b;box-shadow:7px 0 #88738b}
-.person:after{content:"";position:absolute;bottom:-1px;left:7px;width:4px;height:7px;border-radius:3px;background:#88738b;box-shadow:7px 0 #88738b}@media(min-width:480px){.app{gap:13px}.board{gap:5px;padding:6px}.panel{padding:14px}}
+.person-gap{flex:0 0 24px;height:36px;display:block;pointer-events:none}
+.walking-passenger{animation:none!important}@media(min-width:480px){.app{gap:13px}.board{gap:5px;padding:6px}.panel{padding:14px}}
 @media(prefers-reduced-motion:reduce){.queue-track,.person{animation:none}}
 
 /* Responsive parking board and game controls */
@@ -48,12 +48,12 @@
 <body>
 <main class="app">
 <header class="topbar"><div class="brand">Mary's <span>Parking</span> Game</div><div class="level" id="level">LEVEL 1</div></header>
-<section class="panel queue-panel"><div class="section-head"><h2>PASSENGERS</h2><span class="queue-count" id="queueCount">On the move</span></div><div class="queue-window"><div class="queue-track" id="queue"></div></div></section>
-<section class="panel pickup-panel"><div class="section-head"><h2>PICK-UP SPACES</h2><span class="hint">Tap a car with a clear path to bring it here</span></div><div class="pickup-spaces"><button class="pickup-space" data-slot="0" aria-label="Pick-up space 1"><span class="slot-number">1</span><span class="slot-empty"></span></button><button class="pickup-space" data-slot="1" aria-label="Pick-up space 2"><span class="slot-number">2</span><span class="slot-empty"></span></button><button class="pickup-space" data-slot="2" aria-label="Pick-up space 3"><span class="slot-number">3</span><span class="slot-empty"></span></button></div></section>
-<section class="panel board-panel"><div class="section-head"><h2 id="shapeName">CAT PARKING</h2><span class="hint">Tap a car when its exit is clear</span></div><div class="board" id="board" aria-label="Six by six car parking puzzle board"></div></section>
+<section class="panel queue-panel"><div class="section-head"><h2>PASSENGERS</h2></div><div class="queue-window"><div class="queue-track" id="queue"></div></div></section>
+<section class="panel pickup-panel"><div class="section-head"><h2>PICK-UP SPACES</h2></div><div class="pickup-spaces"><button class="pickup-space" data-slot="0" aria-label="Pick-up space 1"><span class="slot-number">1</span><span class="slot-empty"></span></button><button class="pickup-space" data-slot="1" aria-label="Pick-up space 2"><span class="slot-number">2</span><span class="slot-empty"></span></button><button class="pickup-space" data-slot="2" aria-label="Pick-up space 3"><span class="slot-number">3</span><span class="slot-empty"></span></button></div></section>
+<section class="panel board-panel"><div class="section-head"><h2 id="shapeName">CAT PARKING</h2></div><div class="board" id="board" aria-label="Six by six car parking puzzle board"></div></section>
 <div class="message" id="message" aria-live="polite">Find a car with a clear path and tap to let it leave.</div>
 <div class="controls"><button class="btn" id="reset">↻ Restart this level</button></div>
-<div class="small">Keep clearing the way. Your next parking pattern is waiting.</div>
+
 </main>
 <div class="overlay" id="overlay"><div class="dialog"><h2 id="dialogTitle">Lovely driving!</h2><p id="dialogText">The next parking shape is ready.</p><button class="btn" id="dialogButton">Continue</button></div></div>
 <script>
@@ -80,7 +80,7 @@ function buildLevel(){
  // Point every car toward its nearest board edge. A car nearest to any edge
  // cannot have another car blocking that route; after it leaves, this remains true.
  cars=pattern.cells.map(([x,y],i)=>({id:i+1,x,y,d:edgeDirection(x,y),color:palette[(i+level-1)%palette.length],active:true}));
- initial=JSON.parse(JSON.stringify(cars));passengers=cars.length;transitioning=false;
+ initial=JSON.parse(JSON.stringify(cars));passengers=cars.length;transitioning=false;nextCapacity=0;renderPassengerQueue();
  $('shapeName').textContent=pattern.name;$('overlay').classList.remove('show');
  $('message').textContent='Tap a car when the arrow points to a clear exit.';
  render();
@@ -124,11 +124,17 @@ function render(){
   b.setAttribute('aria-label','Car '+c.id+', points '+c.d+', '+(isClear(c)?'exit clear':'exit blocked'));
   b.addEventListener('click',()=>moveCar(c.id,b));board.append(b);
  });
- const track=$('queue');track.innerHTML='';
- for(let i=0;i<22;i++){const p=document.createElement('div');p.className='person';p.style.setProperty('--c',palette[(i+level)%palette.length]);p.innerHTML='<i class="head"></i><i class="body"></i>';track.append(p)}
- $('queueCount').textContent='Passengers are on the move';$('level').textContent='LEVEL '+level;
+ $('level').textContent='LEVEL '+level;
 }
 const pickupSlots=[null,null,null];let nextCapacity=0;const capacities=[4,6,8,6,4,8];const pickupColors=['#a9d9c2','#f3b8d2','#b8d5f2','#d1c1ed'];
+function renderPassengerQueue(){
+ const track=$('queue');track.innerHTML='';
+ const total=cars.reduce((sum,car,i)=>sum+capacities[i%capacities.length],0);
+ for(let i=0;i<total;i++){
+  const p=document.createElement('div');p.className='person';p.style.setProperty('--c',palette[(i+level)%palette.length]);
+  p.innerHTML='<i class="head"></i><i class="body"></i>';track.append(p);
+ }
+}
 let pendingPickupCar=null;
 function renderPickupSlot(index){
  const slot=document.querySelector('[data-slot="'+index+'"]');const item=pickupSlots[index];if(!slot)return;
@@ -143,21 +149,26 @@ function renderPickupSlot(index){
  slot.setAttribute('aria-label','Car with '+item.capacity+' seats, '+item.filled+' passengers aboard');
 }
 function animatePassenger(index,seatIndex){
- const queueWindow=$('queue').parentElement;
- const start=queueWindow.getBoundingClientRect();
- const seats=document.querySelectorAll('[data-slot="'+index+'"] .pickup-seat.filled');
- const target=seats[seatIndex];
- if(!target)return;
+ const source=$('queue').querySelector('.person');
+ const target=document.querySelector('[data-slot="'+index+'"] .pickup-seat.filled');
+ if(!source||!target)return;
+ const start=source.getBoundingClientRect();
  const end=target.getBoundingClientRect();
+ const color=getComputedStyle(source).getPropertyValue('--c').trim()||'#e7adbd';
+ const gap=document.createElement('span');gap.className='person-gap';gap.setAttribute('aria-hidden','true');
+ source.replaceWith(gap);
  const walker=document.createElement('span');
  walker.className='walking-passenger';
- walker.innerHTML='<i class="head"></i><i class="body"></i><i class="legs"></i>';
- walker.style.left=(start.left+18)+'px';
- walker.style.top=(start.top+5)+'px';
+ walker.innerHTML='<i class="head"></i><i class="body"></i>';
+ walker.style.setProperty('--c',color);
+ walker.querySelector('.head').style.background=color;
+ walker.querySelector('.body').style.background=color;
+ walker.style.left=start.left+'px';
+ walker.style.top=start.top+'px';
  document.body.append(walker);
- const dx=end.left+end.width/2-(start.left+18);
- const dy=end.top+end.height/2-(start.top+5);
- requestAnimationFrame(()=>{walker.style.transform='translate('+dx+'px,'+dy+'px) scale(.72)';walker.style.opacity='.25'});
+ const dx=end.left+end.width/2-(start.left+start.width/2);
+ const dy=end.top+end.height/2-(start.top+start.height/2);
+ requestAnimationFrame(()=>{walker.style.transform='translate('+dx+'px,'+dy+'px) scale(.65)';walker.style.opacity='.15'});
  setTimeout(()=>walker.remove(),750);
 }
 function callPickupCar(index){
