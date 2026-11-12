@@ -17,7 +17,7 @@ const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/gi)];
 if (scripts.length === 0) throw new Error('No inline game script was found.');
 for (const [, source] of scripts) new vm.Script(source, { filename: 'index.html:inline-script' });
 
-const requiredMarkup = ['data-slot="0"', 'data-slot="1"', 'PICK-UP SPACES', 'id="queue"'];
+const requiredMarkup = ['data-slot="0"', 'data-slot="1"', 'data-slot="2"', 'PICK-UP SPACES', 'id="queue"'];
 for (const required of requiredMarkup) {
   if (!html.includes(required)) throw new Error('Expected pickup feature is missing: ' + required);
 }
@@ -30,7 +30,7 @@ for (const required of [
   'item.filled>=item.capacity',
   'pickupSlots[index]=null',
   'pendingPickupCar=car',
-  'Tap a car with a clear path to bring it here'
+  'function animatePassenger(index,seatIndex)'
 ]) {
   if (!gameScript.includes(required) && !html.includes(required)) {
     throw new Error('Expected pickup behaviour is missing: ' + required);
