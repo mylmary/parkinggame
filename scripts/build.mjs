@@ -1,4 +1,4 @@
-import { mkdir, readFile, rm, copyFile } from 'node:fs/promises';
+import { mkdir, rm, copyFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 
