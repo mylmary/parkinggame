@@ -67,7 +67,7 @@ const patterns=[
 {name:'SMILE PARKING',cells:[[1,0],[2,0],[3,0],[4,0],[0,1],[5,1],[0,2],[2,2],[3,2],[5,2],[0,3],[5,3],[1,4],[4,4],[2,5],[3,5]]}
 ];
 const arrows={E:'➜',W:'⬅',N:'⬆',S:'⬇'};
-let level=1,score=0,cars=[],initial=[],passengers=0,transitioning=false,advanceTimer=null;
+let level=1,score=0,cars=[],initial=[],passengers=0,totalPassengers=0,boardedPassengers=0,transitioning=false,advanceTimer=null;
 const $=id=>document.getElementById(id);
 const directions=['E','W','N','S'];
 function edgeDirection(x,y){
@@ -79,8 +79,8 @@ function buildLevel(){
  const pattern=patterns[(level-1)%patterns.length];
  // Point every car toward its nearest board edge. A car nearest to any edge
  // cannot have another car blocking that route; after it leaves, this remains true.
- cars=pattern.cells.map(([x,y],i)=>({id:i+1,x,y,d:edgeDirection(x,y),color:palette[(i+level-1)%palette.length],active:true}));
- initial=JSON.parse(JSON.stringify(cars));passengers=cars.length;transitioning=false;nextCapacity=0;renderPassengerQueue();
+ cars=pattern.cells.map(([x,y],i)=>({id:i+1,x,y,d:edgeDirection(x,y),color:palette[(i+level-1)%palette.length],capacity:capacities[i%capacities.length],active:true}));
+ clearPickupSlots();pendingPickupCar=null;initial=JSON.parse(JSON.stringify(cars));totalPassengers=cars.reduce((sum,car)=>sum+car.capacity,0);passengers=totalPassengers;boardedPassengers=0;transitioning=false;renderPassengerQueue();
  $('shapeName').textContent=pattern.name;$('overlay').classList.remove('show');
  $('message').textContent='Tap a car when the arrow points to a clear exit.';
  render();
@@ -126,12 +126,12 @@ function render(){
  });
  $('level').textContent='LEVEL '+level;
 }
-const pickupSlots=[null,null,null];let nextCapacity=0;const capacities=[4,6,8,6,4,8];const pickupColors=['#a9d9c2','#f3b8d2','#b8d5f2','#d1c1ed'];
+const pickupSlots=[null,null,null];const capacities=[4,6,8,6,4,8];const pickupColors=['#a9d9c2','#f3b8d2','#b8d5f2','#d1c1ed'];
 function renderPassengerQueue(){
  const track=$('queue');track.innerHTML='';
  // Create enough passengers for every car, using that car's exact colour.
  cars.forEach((car,i)=>{
-  const count=capacities[i%capacities.length];
+  const count=car.capacity;
   for(let n=0;n<count;n++){
    const p=document.createElement('div');p.className='person';p.style.setProperty('--c',car.color);
    p.innerHTML='<i class="head"></i><i class="body"></i>';track.append(p);
@@ -183,8 +183,8 @@ function animatePassenger(index,seatIndex,carColor){
 function callPickupCar(index){
  if(pickupSlots[index]||!pendingPickupCar)return;
  const sourceCar=pendingPickupCar;pendingPickupCar=null;
- const capacity=capacities[nextCapacity++%capacities.length];
- const item={capacity,filled:0,color:nextCapacity,carColor:sourceCar.color,departing:false,timer:null};
+ const capacity=sourceCar.capacity;
+ const item={capacity,filled:0,color:sourceCar.id,carColor:sourceCar.color,departing:false,timer:null};
  pickupSlots[index]=item;renderPickupSlot(index);
  item.timer=setInterval(()=>{
   if(pickupSlots[index]!==item||item.departing){clearInterval(item.timer);return}
@@ -194,9 +194,11 @@ function callPickupCar(index){
    $('message').textContent='Waiting for a matching-colour passenger to reach the pick-up point.';
    return;
   }
+  boardedPassengers++;passengers=Math.max(0,totalPassengers-boardedPassengers);
   if(item.filled>=item.capacity){
    item.departing=true;renderPickupSlot(index);clearInterval(item.timer);
-   setTimeout(()=>{if(pickupSlots[index]===item){pickupSlots[index]=null;renderPickupSlot(index);if(cars.every(c=>!c.active)&&pickupSlots.every(slot=>!slot))completeLevel()}},650);
+   setTimeout(()=>{if(pickupSlots[index]===item){pickupSlots[index]=null;renderPickupSlot(index)}},650);
+   if(boardedPassengers>=totalPassengers)setTimeout(()=>completeLevel(),760);
   }
  },850);
 }
@@ -225,6 +227,9 @@ function moveCar(id,el){
  $('message').textContent='Car parked in pick-up space '+(emptyIndex+1)+'. Passengers are boarding.';
  setTimeout(()=>{render();if(cars.every(c=>!c.active)&&pickupSlots.every(slot=>!slot))completeLevel()},280);
 }
+function clearPickupSlots(){
+ pickupSlots.forEach((item,index)=>{if(item?.timer)clearInterval(item.timer);pickupSlots[index]=null;renderPickupSlot(index)});
+}
 function completeLevel(){
  if(transitioning)return;transitioning=true;
  $('dialogTitle').textContent='Shape cleared!';$('dialogText').textContent='You cleared every car. Moving on to the next parking shape…';
@@ -233,7 +238,7 @@ function completeLevel(){
  advanceTimer=setTimeout(()=>{if(transitioning)nextLevel()},1100);
 }
 function nextLevel(){if(advanceTimer)clearTimeout(advanceTimer);advanceTimer=null;level++;buildLevel()}
-function restart(){if(advanceTimer)clearTimeout(advanceTimer);advanceTimer=null;transitioning=false;cars=JSON.parse(JSON.stringify(initial));passengers=cars.length;$('overlay').classList.remove('show');$('message').textContent='Find a car with a clear path and tap to let it leave.';render()}
+function restart(){if(advanceTimer)clearTimeout(advanceTimer);advanceTimer=null;clearPickupSlots();pendingPickupCar=null;transitioning=false;cars=JSON.parse(JSON.stringify(initial));passengers=totalPassengers;boardedPassengers=0;$('overlay').classList.remove('show');$('message').textContent='Find a car with a clear path and tap to let it leave.';renderPassengerQueue();render()}
 $('reset').addEventListener('click',restart);$('dialogButton').addEventListener('click',nextLevel);window.addEventListener('resize',render);buildLevel();
 })();
 </script>
