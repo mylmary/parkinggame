@@ -128,7 +128,7 @@ function moveCar(id,el){
  const car=cars.find(c=>c.id===id&&c.active);if(!car)return;
  if(!isClear(car)){$('message').textContent='This car is blocked. Clear the cars in front of its arrow first.';return}
  el.classList.add('exiting');car.active=false;score+=10;passengers=Math.max(0,passengers-1);
- $('message').textContent='Clear road! The car is driving away.';$('left').textContent=cars.filter(c=>c.active).length;$('passengers').textContent=passengers;$('score').textContent=score;
+ $('message').textContent='Clear road! The car is driving away.';
  setTimeout(()=>{render();if(cars.every(c=>!c.active))completeLevel()},280);
 }
 function completeLevel(){
