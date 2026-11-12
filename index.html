@@ -35,12 +35,13 @@ const patterns=[
 {name:'STAR PARKING',cells:[[2,0],[3,0],[2,1],[3,1],[0,2],[1,2],[2,2],[3,2],[4,2],[5,2],[1,3],[2,3],[3,3],[4,3],[0,4],[2,4],[3,4],[5,4],[1,5],[4,5]]}
 ];
 const arrows={E:'➜',W:'⬅',N:'⬆',S:'⬇'};
-let level=1,score=0,cars=[],initial=[],passengers=0,transitioning=false;
+let level=1,score=0,cars=[],initial=[],passengers=0,transitioning=false,advanceTimer=null;
 const $=id=>document.getElementById(id);
 const directions=['E','W','N','S'];
+function edgeDirection(x,y,i,l){if(x===0)return 'W';if(x===5)return 'E';if(y===0)return 'N';if(y===5)return 'S';return directions[(i*3+Math.floor(i/4)+l)%4]}
 function buildLevel(){
  const pattern=patterns[(level-1)%patterns.length];
- cars=pattern.cells.map(([x,y],i)=>({id:i+1,x,y,d:directions[(i*3+Math.floor(i/4)+level)%4],color:palette[(i+level-1)%palette.length],active:true}));
+ cars=pattern.cells.map(([x,y],i)=>({id:i+1,x,y,d:edgeDirection(x,y,i,level),color:palette[(i+level-1)%palette.length],active:true}));
  // Rotate the direction sequence by level while keeping each car in its own square.
  initial=JSON.parse(JSON.stringify(cars));passengers=cars.length;transitioning=false;
  $('shapeName').textContent=pattern.name;$('overlay').classList.remove('show');
@@ -62,10 +63,8 @@ function render(){
  ['top','right','bottom','left'].forEach(side=>{const e=document.createElement('span');e.className='board-exit '+side;e.textContent=({top:'↓',right:'→',bottom:'↑',left:'←'})[side];board.append(e)});
  cars.filter(c=>c.active).forEach(c=>{
   const b=document.createElement('button');b.className='car '+({E:'east',W:'west',N:'north',S:'south'}[c.d]);b.style.setProperty('--c',c.color);
-  b.style.gridColumn=(c.x+1);b.style.gridRow=(c.y+1);b.style.position='absolute';
-  // Place the button precisely within its own grid square, leaving a clear margin around the car.
-  b.style.left='calc(5px + '+c.x+' * (100% - 10px - 20px) / 6 + ' + '+(c.x*4/6)+'px)';
-  b.style.top='calc(5px + '+c.y+' * (100% - 10px - 20px) / 6 + ' + '+(c.y*4/6)+'px)';
+  const boardWidth=board.clientWidth||400,pad=5,gap=4,cell=(boardWidth-pad*2-gap*5)/6;
+  b.style.position='absolute';b.style.left=(pad+c.x*(cell+gap)+cell*.09)+'px';b.style.top=(pad+c.y*(cell+gap)+cell*.09)+'px';b.style.width=(cell*.82)+'px';b.style.height=(cell*.82)+'px';
   b.innerHTML='<i class="car-body"></i><i class="roof"></i><i class="wheel a"></i><i class="wheel b"></i><i class="wheel c"></i><i class="wheel d"></i><span class="arrow">'+arrows[c.d]+'</span>';
   b.setAttribute('aria-label','Car '+c.id+', points '+c.d+', '+(isClear(c)?'exit clear':'exit blocked'));
   b.addEventListener('click',()=>moveCar(c.id,b));board.append(b);
@@ -89,10 +88,10 @@ function completeLevel(){
  $('dialogTitle').textContent='Shape cleared!';$('dialogText').textContent='You cleared every car. Moving on to the next parking shape…';
  $('dialogButton').textContent='Continue';$('overlay').classList.add('show');
  // Automatically continue so the game feels like one continuous journey.
- setTimeout(()=>{if(transitioning)nextLevel()},1100);
+ advanceTimer=setTimeout(()=>{if(transitioning)nextLevel()},1100);
 }
-function nextLevel(){level++;buildLevel()}
-function restart(){transitioning=false;cars=JSON.parse(JSON.stringify(initial));passengers=cars.length;$('overlay').classList.remove('show');$('message').textContent='Find a car with a clear path and tap to let it leave.';render()}
+function nextLevel(){if(advanceTimer)clearTimeout(advanceTimer);advanceTimer=null;level++;buildLevel()}
+function restart(){if(advanceTimer)clearTimeout(advanceTimer);advanceTimer=null;transitioning=false;cars=JSON.parse(JSON.stringify(initial));passengers=cars.length;$('overlay').classList.remove('show');$('message').textContent='Find a car with a clear path and tap to let it leave.';render()}
 $('reset').addEventListener('click',restart);$('dialogButton').addEventListener('click',nextLevel);window.addEventListener('resize',render);buildLevel();
 })();
 </script>
