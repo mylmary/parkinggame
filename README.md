@@ -1,27 +1,35 @@
 # Mary's Parking Game
 
-A mobile-first colour-matching parking puzzle. Tap a car to move it into an available parking bay; passengers of the matching colour walk over and board. Send full cars away, clear the passenger queue, and progress through levels.
-
-## Play
-
-The game is published with GitHub Pages. After the first successful **Deploy to GitHub Pages** workflow, open:
-
-`https://mylmary.github.io/parkinggame/`
+A mobile-first colour-matching parking puzzle. Tap a car to move it into an available parking bay. Matching passengers board automatically, up to four per car; the car then leaves and frees its space. Clear the queue to complete each level.
 
 ## Run locally
 
-Open `index.html` in a modern browser. No build tools or external libraries are required.
+Open `index.html` in a modern browser. The game has no external runtime dependencies.
 
-## Publishing
+## Build
 
-The GitHub Actions workflow in `.github/workflows/deploy.yml` deploys the site whenever changes are pushed to `main`, and can also be run manually from the Actions tab. In the repository settings, ensure **Pages → Build and deployment → Source** is set to **GitHub Actions**.
+Requires Node.js 22 or newer.
+
+```bash
+npm run check
+npm run build
+```
+
+The production-ready static site is written to `dist/index.html`.
+
+## GitHub Actions
+
+The workflow in `.github/workflows/build.yml` runs on pushes to `main` and can be started manually from the Actions tab. It checks the game source, builds the static site, and uploads `dist/` as the `marys-parking-game-build` artifact for 14 days.
+
+**GitHub Pages is not configured yet.** When you are ready to publish, enable Pages with GitHub Actions and add a deployment workflow.
 
 ## Controls
 
-- Tap a car to select it and send it to the next free bay.
-- Matching passengers board automatically, up to the car's capacity.
-- A full car drives away and frees its bay.
+- Tap an enabled car to move it into the next free parking bay.
+- Cars without any matching passengers waiting are disabled.
+- Matching passengers board automatically; each car carries up to four.
+- A car leaves after it has boarded passengers and no more matching passengers remain, or once it reaches capacity.
 - Clear the passenger queue to complete the level.
-- Use the shuffle button if you need a fresh arrangement.
+- **New arrangement** restarts the current level with a fresh layout.
 
-Progress is saved in the browser on the device you play on.
+The best score is saved in local browser storage on the device you play on. Current level progress is not saved between sessions.
