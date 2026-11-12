@@ -30,7 +30,7 @@ for (const required of [
   'item.filled>=item.capacity',
   'pickupSlots[index]=null',
   'pendingPickupCar=car',
-  'function animatePassenger(index,seatIndex)'
+  'function animatePassenger(index,seatIndex,carColor)'
 ]) {
   if (!gameScript.includes(required) && !html.includes(required)) {
     throw new Error('Expected pickup behaviour is missing: ' + required);
