@@ -41,7 +41,24 @@ const directions=['E','W','N','S'];
 function edgeDirection(x,y,i,l){if(x===0)return 'W';if(x===5)return 'E';if(y===0)return 'N';if(y===5)return 'S';return directions[(i*3+Math.floor(i/4)+l)%4]}
 function buildLevel(){
  const pattern=patterns[(level-1)%patterns.length];
- cars=pattern.cells.map(([x,y],i)=>({id:i+1,x,y,d:edgeDirection(x,y,i,level),color:palette[(i+level-1)%palette.length],active:true}));
+ // Plan a complete solution before showing the board. Each chosen car has a
+ // verified clear lane at the moment it is scheduled to leave.
+ const remaining=pattern.cells.map(([x,y],i)=>({id:i+1,x,y,color:palette[(i+level-1)%palette.length],active:true}));
+ const planned={};let step=0;
+ while(remaining.length){
+  const options=[];
+  for(const c of remaining){
+   for(const d of directions){
+    const clear=remaining.every(o=>o.id===c.id||(d==='E'&&o.y!==c.y)||(d==='W'&&o.y!==c.y)||(d==='N'&&o.x!==c.x)||(d==='S'&&o.x!==c.x)||(d==='E'&&o.x<c.x)||(d==='W'&&o.x>c.x)||(d==='N'&&o.y>c.y)||(d==='S'&&o.y<c.y));
+    if(clear)options.push({car:c,d});
+   }
+  }
+  if(!options.length)break;
+  const pick=options[(level*7+step*3)%options.length];
+  planned[pick.car.id]=pick.d;
+  remaining.splice(remaining.findIndex(c=>c.id===pick.car.id),1);step++;
+ }
+ cars=pattern.cells.map(([x,y],i)=>({id:i+1,x,y,d:planned[i+1]||edgeDirection(x,y,i,level),color:palette[(i+level-1)%palette.length],active:true}));
  // Rotate the direction sequence by level while keeping each car in its own square.
  initial=JSON.parse(JSON.stringify(cars));passengers=cars.length;transitioning=false;
  $('shapeName').textContent=pattern.name;$('overlay').classList.remove('show');
