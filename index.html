@@ -29,40 +29,29 @@
 const palette=['#a9d9c2','#f3b8d2','#b8d5f2','#f5df9e','#d1c1ed','#b5e2df','#efb5b9','#f5c9ad'];
 // One compact car sits inside each occupied square. Each pattern is a recognizable 6×6 silhouette.
 const patterns=[
-{name:'CAT PARKING',cells:[[0,0],[5,0],[0,1],[1,1],[4,1],[5,1],[0,2],[1,2],[2,2],[3,2],[4,2],[5,2],[1,3],[2,3],[3,3],[4,3],[1,4],[4,4],[1,5],[4,5]]},
-{name:'HEART PARKING',cells:[[0,0],[1,0],[4,0],[5,0],[0,1],[1,1],[2,1],[3,1],[4,1],[5,1],[1,2],[2,2],[3,2],[4,2],[1,3],[2,3],[3,3],[4,3],[2,4],[3,4],[2,5],[3,5]]},
-{name:'FLOWER PARKING',cells:[[2,0],[3,0],[1,1],[2,1],[3,1],[4,1],[0,2],[1,2],[2,2],[3,2],[4,2],[5,2],[1,3],[2,3],[3,3],[4,3],[2,4],[3,4],[2,5],[3,5]]},
-{name:'STAR PARKING',cells:[[2,0],[3,0],[2,1],[3,1],[0,2],[1,2],[2,2],[3,2],[4,2],[5,2],[1,3],[2,3],[3,3],[4,3],[0,4],[2,4],[3,4],[5,4],[1,5],[4,5]]}
+{name:'BUTTERFLY PARKING',cells:[[0,0],[1,0],[4,0],[5,0],[0,1],[1,1],[2,1],[3,1],[4,1],[5,1],[0,2],[1,2],[2,2],[3,2],[4,2],[5,2],[1,3],[2,3],[3,3],[4,3],[0,4],[1,4],[4,4],[5,4],[0,5],[1,5],[4,5],[5,5]]},
+{name:'CROWN PARKING',cells:[[0,0],[2,0],[3,0],[5,0],[0,1],[1,1],[2,1],[3,1],[4,1],[5,1],[0,2],[1,2],[2,2],[3,2],[4,2],[5,2],[1,3],[2,3],[3,3],[4,3],[1,4],[2,4],[3,4],[4,4]]},
+{name:'DIAMOND PARKING',cells:[[2,0],[3,0],[1,1],[2,1],[3,1],[4,1],[0,2],[1,2],[2,2],[3,2],[4,2],[5,2],[1,3],[2,3],[3,3],[4,3],[2,4],[3,4],[2,5],[3,5]]},
+{name:'SMILE PARKING',cells:[[1,0],[2,0],[3,0],[4,0],[0,1],[5,1],[0,2],[2,2],[3,2],[5,2],[0,3],[5,3],[1,4],[4,4],[2,5],[3,5]]}
 ];
 const arrows={E:'➜',W:'⬅',N:'⬆',S:'⬇'};
 let level=1,score=0,cars=[],initial=[],passengers=0,transitioning=false,advanceTimer=null;
 const $=id=>document.getElementById(id);
 const directions=['E','W','N','S'];
-function edgeDirection(x,y,i,l){if(x===0)return 'W';if(x===5)return 'E';if(y===0)return 'N';if(y===5)return 'S';return directions[(i*3+Math.floor(i/4)+l)%4]}
+function edgeDirection(x,y){
+ const edges=[{d:'W',n:x},{d:'E',n:5-x},{d:'N',n:y},{d:'S',n:5-y}];
+ edges.sort((a,b)=>a.n-b.n);
+ return edges[0].d;
+}
 function buildLevel(){
  const pattern=patterns[(level-1)%patterns.length];
- // Plan a complete solution before showing the board. Each chosen car has a
- // verified clear lane at the moment it is scheduled to leave.
- const remaining=pattern.cells.map(([x,y],i)=>({id:i+1,x,y,color:palette[(i+level-1)%palette.length],active:true}));
- const planned={};let step=0;
- while(remaining.length){
-  const options=[];
-  for(const c of remaining){
-   for(const d of directions){
-    const clear=remaining.every(o=>o.id===c.id||(d==='E'&&o.y!==c.y)||(d==='W'&&o.y!==c.y)||(d==='N'&&o.x!==c.x)||(d==='S'&&o.x!==c.x)||(d==='E'&&o.x<c.x)||(d==='W'&&o.x>c.x)||(d==='N'&&o.y>c.y)||(d==='S'&&o.y<c.y));
-    if(clear)options.push({car:c,d});
-   }
-  }
-  if(!options.length)break;
-  const pick=options[(level*7+step*3)%options.length];
-  planned[pick.car.id]=pick.d;
-  remaining.splice(remaining.findIndex(c=>c.id===pick.car.id),1);step++;
- }
- cars=pattern.cells.map(([x,y],i)=>({id:i+1,x,y,d:planned[i+1]||edgeDirection(x,y,i,level),color:palette[(i+level-1)%palette.length],active:true}));
- // Rotate the direction sequence by level while keeping each car in its own square.
+ // Point every car toward its nearest board edge. A car nearest to any edge
+ // cannot have another car blocking that route; after it leaves, this remains true.
+ cars=pattern.cells.map(([x,y],i)=>({id:i+1,x,y,d:edgeDirection(x,y),color:palette[(i+level-1)%palette.length],active:true}));
  initial=JSON.parse(JSON.stringify(cars));passengers=cars.length;transitioning=false;
  $('shapeName').textContent=pattern.name;$('overlay').classList.remove('show');
- $('message').textContent='Find a car with a clear path and tap to let it leave.';render();
+ $('message').textContent='Tap a car when the arrow points to a clear exit.';
+ render();
 }
 function occupied(c){return c.y*6+c.x}
 function isClear(car){
