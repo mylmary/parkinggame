@@ -1,4 +1,4 @@
-name: Build Mary's Parking Game
+name: Build and publish Mary's Parking Game
 
 on:
   push:
@@ -7,13 +7,18 @@ on:
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
 
 concurrency:
-  group: parkinggame-build
+  group: parkinggame-pages
   cancel-in-progress: true
 
 jobs:
-  build:
+  build-and-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out source
@@ -22,12 +27,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Build game
+      - name: Build and validate game
         run: npm run build
-      - name: Save built game
-        uses: actions/upload-artifact@v4
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: marys-parking-game-build
           path: dist/
-          if-no-files-found: error
-          retention-days: 14
+      - name: Publish live preview
+        id: deployment
+        uses: actions/deploy-pages@v4
