@@ -188,11 +188,12 @@ function callPickupCar(index){
  pickupSlots[index]=item;renderPickupSlot(index);
  item.timer=setInterval(()=>{
   if(pickupSlots[index]!==item||item.departing){clearInterval(item.timer);return}
-  if(!animatePassenger(index,item.filled,item.carColor)){
+  item.filled++;renderPickupSlot(index);
+  if(!animatePassenger(index,item.filled-1,item.carColor)){
+   item.filled--;renderPickupSlot(index);
    $('message').textContent='Waiting for a matching-colour passenger to reach the pick-up point.';
    return;
   }
-  item.filled++;renderPickupSlot(index);
   if(item.filled>=item.capacity){
    item.departing=true;renderPickupSlot(index);clearInterval(item.timer);
    setTimeout(()=>{if(pickupSlots[index]===item){pickupSlots[index]=null;renderPickupSlot(index);if(cars.every(c=>!c.active)&&pickupSlots.every(slot=>!slot))completeLevel()}},650);
