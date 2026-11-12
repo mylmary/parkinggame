@@ -8,7 +8,7 @@
 <title>Mary's Parking Game</title>
 <style>
 :root{--ink:#594d65;--muted:#94869b;--pink:#f3b8d2;--mint:#a9d9c2;--blue:#b8d5f2;--yellow:#f5df9e;--lilac:#d1c1ed;--aqua:#b5e2df;--rose:#efb5b9;--peach:#f5c9ad}
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:ui-rounded,"Trebuchet MS",system-ui,sans-serif;color:var(--ink);background:#f8edf4}body{display:flex;justify-content:center;overscroll-behavior:none}.app{width:min(100%,560px);min-height:100svh;padding:env(safe-area-inset-top) 14px calc(16px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px}.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 4px 1px}.brand{font-weight:1000;font-size:clamp(21px,6vw,29px);letter-spacing:-1px;color:#65546c}.brand span{color:#c47da5}.level{background:#fff9;border:0;border-radius:14px;padding:7px 11px;font-weight:900;font-size:12px}.stats{display:flex;gap:8px}.stat{background:#fff8;border:0;border-radius:12px;padding:6px 9px;font-size:11px;font-weight:800;color:var(--muted)}.stat strong{color:var(--ink);font-size:14px;margin-left:3px}.panel{background:#fff9fc;border:0;border-radius:21px;box-shadow:none;padding:12px}.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.section-head h2{font-size:12px;margin:0;font-weight:1000;letter-spacing:.3px}.hint{font-size:10px;color:var(--muted);font-weight:700}.queue-panel{padding:10px 12px}.queue-window{height:43px;overflow:hidden;position:relative}.queue-track{display:flex;align-items:center;gap:8px;width:max-content;animation:none}.queue-window:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,#fff9fc 0%,transparent 7%,transparent 93%,#fff9fc 100%)}.person{flex:0 0 24px;height:36px;position:relative;display:flex;align-items:flex-end;justify-content:center;animation:personBob 1.4s ease-in-out infinite}.person:nth-child(3n){animation-delay:-.5s}.person .head{position:absolute;top:0;width:15px;height:15px;border-radius:50%;background:var(--c)}.person .body{width:20px;height:21px;border-radius:9px 9px 5px 5px;background:var(--c)}@keyframes queueTravel{from{transform:translateX(0)}to{transform:translateX(-35%)}}@keyframes personBob{50%{transform:translateY(-4px)}}.queue-count{font-size:10px;color:var(--muted);font-weight:800;white-space:nowrap}.pickup-panel{padding:10px 12px}.pickup-spaces{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.pickup-space{height:76px;border:1.5px dashed #d8c7d8;border-radius:12px;background:#faf5fa;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:default;color:#b99bb7;font:inherit}.pickup-space:disabled{cursor:default;opacity:1}.slot-number{position:absolute;left:8px;top:5px;font-size:9px;font-weight:900;color:#c3b2c4}.slot-empty{font-size:25px;font-weight:400;opacity:.75}.pickup-car{width:72px;height:34px;border-radius:12px 14px 8px 8px;position:relative;flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:2px;box-shadow:inset 0 -3px #0000000b;transition:transform .35s,opacity .35s}.pickup-car:before{content:"";position:absolute;left:17px;top:-9px;width:37px;height:16px;border-radius:8px 8px 2px 2px;background:inherit;filter:brightness(.98)}.pickup-car:after{content:"";position:absolute;left:24px;top:-5px;width:23px;height:10px;border-radius:5px 5px 1px 1px;background:#ffffffa8;z-index:1}.pickup-seat{position:relative;z-index:2;width:7px;height:10px;border-radius:5px 5px 2px 2px;background:#fff9;display:flex;align-items:flex-start;justify-content:center}.pickup-seat.filled{background:#fff}.pickup-seat .tiny-head{width:5px;height:5px;border-radius:50%;background:#9a7c99;margin-top:-3px}.pickup-seat .tiny-body{position:absolute;top:3px;width:6px;height:6px;border-radius:3px 3px 1px 1px;background:#9a7c99}.pickup-capacity{position:absolute;bottom:3px;right:6px;font-size:9px;font-weight:900;color:#88738b;background:#fff9;border-radius:6px;padding:1px 4px}.pickup-status{position:absolute;bottom:3px;left:6px;font-size:8px;font-weight:800;color:#88738b}.pickup-car.departing{transform:translateX(130%);opacity:0}.pickup-space.occupied{border-style:solid;border-color:#e7d9e8;background:#f7eff6}.pickup-space.occupied .slot-empty{display:none}.pickup-space.occupied{cursor:default}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:ui-rounded,"Trebuchet MS",system-ui,sans-serif;color:var(--ink);background:#f8edf4}body{display:flex;justify-content:center;overscroll-behavior:none}.app{width:min(100%,560px);min-height:100svh;padding:env(safe-area-inset-top) 14px calc(16px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px}.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 4px 1px}.brand{font-weight:1000;font-size:clamp(21px,6vw,29px);letter-spacing:-1px;color:#65546c}.brand span{color:#c47da5}.level{background:#fff9;border:0;border-radius:14px;padding:7px 11px;font-weight:900;font-size:12px}.stats{display:flex;gap:8px}.stat{background:#fff8;border:0;border-radius:12px;padding:6px 9px;font-size:11px;font-weight:800;color:var(--muted)}.stat strong{color:var(--ink);font-size:14px;margin-left:3px}.panel{background:#fff9fc;border:0;border-radius:21px;box-shadow:none;padding:12px}.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.section-head h2{font-size:12px;margin:0;font-weight:1000;letter-spacing:.3px}.hint{font-size:10px;color:var(--muted);font-weight:700}.queue-panel{padding:10px 12px}.queue-window{height:43px;overflow:hidden;position:relative}.queue-track{display:flex;align-items:center;gap:8px;width:max-content;animation:queueTravel 42s linear infinite}.queue-window:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,#fff9fc 0%,transparent 7%,transparent 93%,#fff9fc 100%)}.person{flex:0 0 24px;height:36px;position:relative;display:flex;align-items:flex-end;justify-content:center;animation:personBob 1.4s ease-in-out infinite}.person:nth-child(3n){animation-delay:-.5s}.person .head{position:absolute;top:0;width:15px;height:15px;border-radius:50%;background:var(--c)}.person .body{width:20px;height:21px;border-radius:9px 9px 5px 5px;background:var(--c)}@keyframes queueTravel{from{transform:translateX(0)}to{transform:translateX(-35%)}}@keyframes personBob{50%{transform:translateY(-4px)}}.queue-count{font-size:10px;color:var(--muted);font-weight:800;white-space:nowrap}.pickup-panel{padding:10px 12px}.pickup-spaces{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.pickup-space{height:76px;border:1.5px dashed #d8c7d8;border-radius:12px;background:#faf5fa;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:default;color:#b99bb7;font:inherit}.pickup-space:disabled{cursor:default;opacity:1}.slot-number{position:absolute;left:8px;top:5px;font-size:9px;font-weight:900;color:#c3b2c4}.slot-empty{font-size:25px;font-weight:400;opacity:.75}.pickup-car{width:72px;height:34px;border-radius:12px 14px 8px 8px;position:relative;flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:2px;box-shadow:inset 0 -3px #0000000b;transition:transform .35s,opacity .35s}.pickup-car:before{content:"";position:absolute;left:17px;top:-9px;width:37px;height:16px;border-radius:8px 8px 2px 2px;background:inherit;filter:brightness(.98)}.pickup-car:after{content:"";position:absolute;left:24px;top:-5px;width:23px;height:10px;border-radius:5px 5px 1px 1px;background:#ffffffa8;z-index:1}.pickup-seat{position:relative;z-index:2;width:7px;height:10px;border-radius:5px 5px 2px 2px;background:#fff9;display:flex;align-items:flex-start;justify-content:center}.pickup-seat.filled{background:#fff}.pickup-seat .tiny-head{width:5px;height:5px;border-radius:50%;background:#9a7c99;margin-top:-3px}.pickup-seat .tiny-body{position:absolute;top:3px;width:6px;height:6px;border-radius:3px 3px 1px 1px;background:#9a7c99}.pickup-capacity{position:absolute;bottom:3px;right:6px;font-size:9px;font-weight:900;color:#88738b;background:#fff9;border-radius:6px;padding:1px 4px}.pickup-status{position:absolute;bottom:3px;left:6px;font-size:8px;font-weight:800;color:#88738b}.pickup-car.departing{transform:translateX(130%);opacity:0}.pickup-space.occupied{border-style:solid;border-color:#e7d9e8;background:#f7eff6}.pickup-space.occupied .slot-empty{display:none}.pickup-space.occupied{cursor:default}
 .walking-passenger{position:fixed;z-index:50;width:20px;height:32px;display:block;pointer-events:none;transition:transform .68s cubic-bezier(.2,.65,.3,1),opacity .68s ease}
 .walking-passenger .head{position:absolute;top:0;left:3px;width:14px;height:14px;border-radius:50%;background:#e7adbd}
 .walking-passenger .body{position:absolute;top:12px;left:1px;width:18px;height:13px;border-radius:7px 7px 4px 4px;background:#d6a9d0}
@@ -129,11 +129,14 @@ function render(){
 const pickupSlots=[null,null,null];let nextCapacity=0;const capacities=[4,6,8,6,4,8];const pickupColors=['#a9d9c2','#f3b8d2','#b8d5f2','#d1c1ed'];
 function renderPassengerQueue(){
  const track=$('queue');track.innerHTML='';
- const total=cars.reduce((sum,car,i)=>sum+capacities[i%capacities.length],0);
- for(let i=0;i<total;i++){
-  const p=document.createElement('div');p.className='person';p.style.setProperty('--c',palette[(i+level)%palette.length]);
-  p.innerHTML='<i class="head"></i><i class="body"></i>';track.append(p);
- }
+ // Create enough passengers for every car, using that car's exact colour.
+ cars.forEach((car,i)=>{
+  const count=capacities[i%capacities.length];
+  for(let n=0;n<count;n++){
+   const p=document.createElement('div');p.className='person';p.style.setProperty('--c',car.color);
+   p.innerHTML='<i class="head"></i><i class="body"></i>';track.append(p);
+  }
+ });
 }
 let pendingPickupCar=null;
 function renderPickupSlot(index){
@@ -148,10 +151,15 @@ function renderPickupSlot(index){
  const status=document.createElement('span');status.className='pickup-status';status.textContent=item.departing?'On the way':'Boarding';slot.append(status);
  slot.setAttribute('aria-label','Car with '+item.capacity+' seats, '+item.filled+' passengers aboard');
 }
-function animatePassenger(index,seatIndex){
- const source=$('queue').querySelector('.person');
+function animatePassenger(index,seatIndex,carColor){
+ const windowRect=$('queue').getBoundingClientRect();
+ const source=[...$('queue').querySelectorAll('.person')].find(person=>{
+  const color=getComputedStyle(person).getPropertyValue('--c').trim();
+  const rect=person.getBoundingClientRect();
+  return color.toLowerCase()===carColor.toLowerCase()&&rect.right>windowRect.left&&rect.left<windowRect.right;
+ });
  const target=document.querySelector('[data-slot="'+index+'"] .pickup-seat.filled');
- if(!source||!target)return;
+ if(!source||!target)return false;
  const start=source.getBoundingClientRect();
  const end=target.getBoundingClientRect();
  const color=getComputedStyle(source).getPropertyValue('--c').trim()||'#e7adbd';
@@ -170,6 +178,7 @@ function animatePassenger(index,seatIndex){
  const dy=end.top+end.height/2-(start.top+start.height/2);
  requestAnimationFrame(()=>{walker.style.transform='translate('+dx+'px,'+dy+'px) scale(.65)';walker.style.opacity='.15'});
  setTimeout(()=>walker.remove(),750);
+ return true;
 }
 function callPickupCar(index){
  if(pickupSlots[index]||!pendingPickupCar)return;
@@ -179,7 +188,11 @@ function callPickupCar(index){
  pickupSlots[index]=item;renderPickupSlot(index);
  item.timer=setInterval(()=>{
   if(pickupSlots[index]!==item||item.departing){clearInterval(item.timer);return}
-  item.filled++;renderPickupSlot(index);animatePassenger(index,item.filled-1);
+  if(!animatePassenger(index,item.filled,item.carColor)){
+   $('message').textContent='Waiting for a matching-colour passenger to reach the pick-up point.';
+   return;
+  }
+  item.filled++;renderPickupSlot(index);
   if(item.filled>=item.capacity){
    item.departing=true;renderPickupSlot(index);clearInterval(item.timer);
    setTimeout(()=>{if(pickupSlots[index]===item){pickupSlots[index]=null;renderPickupSlot(index);if(cars.every(c=>!c.active)&&pickupSlots.every(slot=>!slot))completeLevel()}},650);
