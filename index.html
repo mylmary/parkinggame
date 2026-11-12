@@ -37,10 +37,11 @@ function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random
 function makeLevel(){
  const colourCount=Math.min(3+Math.floor((level-1)/2),palette.length),colours=palette.slice(0,colourCount);
  const passengerCount=12+level*3;queue=[];
- for(let i=0;i<passengerCount;i++)queue.push(colours[(Math.floor(i/2)+Math.floor(i/5))%colourCount]);
- // Ensure every colour has cars, with extra cars for later levels.
- const carCount=Math.min(10+level*2,24);cars=[];
- for(let i=0;i<carCount;i++)cars.push({id:i+1,color:colours[(i*3+Math.floor(i/2))%colourCount],seats:0});
+ // Small colour groups keep every colour represented in the queue.
+ for(let i=0;i<passengerCount;i++)queue.push(colours[Math.floor(i/3)%colourCount]);
+ // Provide enough cars for every passenger, with a few spare choices.
+ const carCount=Math.ceil(passengerCount/CAPACITY)+colourCount;cars=[];
+ for(let i=0;i<carCount;i++)cars.push({id:i+1,color:colours[i%colourCount],seats:0});
  shuffle(cars);bays=Array(BAY_COUNT).fill(null);busy=false;complete=false;
  $('overlay').classList.remove('show');$('next').hidden=true;render();say('Choose a car that matches the waiting passengers.');
 }
@@ -50,7 +51,7 @@ function render(){
  queue.forEach((c,i)=>{const p=document.createElement('div');p.className='person';p.style.setProperty('--c',c.hex);p.style.animationDelay=(i%6)*.08+'s';p.innerHTML='<i class="head"></i><i class="body"></i>';p.title=c.name;$('queue').append(p)});
  $('bays').innerHTML='';
  bays.forEach((car,i)=>{const b=document.createElement('div');b.className='bay'+(car?' filled':'');b.innerHTML='<span class="bay-number">'+(i+1)+'</span>';if(car){b.style.setProperty('--c',car.color.hex);b.append(carElement(car));const progress=document.createElement('div');progress.className='progress';progress.innerHTML='<i style="width:'+(car.seats/CAPACITY*100)+'%;background:'+car.color.hex+'"></i>';b.append(progress)}$('bays').append(b)});
- $('cars').innerHTML='';cars.forEach(car=>{const b=document.createElement('button');b.className='car-button';b.setAttribute('aria-label','Select '+car.color.name+' car');b.innerHTML=carMarkup(car)+'<span class="car-label">'+car.color.name+'</span>';b.addEventListener('click',()=>selectCar(car.id));$('cars').append(b)});
+ $('cars').innerHTML='';cars.forEach(car=>{const b=document.createElement('button');const hasPassengers=queue.some(p=>p.name===car.color.name);b.className='car-button';b.disabled=!hasPassengers||busy||complete;b.title=hasPassengers?'Select '+car.color.name+' car':'No '+car.color.name.toLowerCase()+' passengers are waiting';b.setAttribute('aria-label',b.title);b.innerHTML=carMarkup(car)+'<span class="car-label">'+car.color.name+'</span>';b.addEventListener('click',()=>selectCar(car.id));$('cars').append(b)});
  $('empty').hidden=cars.length!==0;$('best').textContent=best;
 }
 function carMarkup(car){return '<span class="car" style="--c:'+car.color.hex+'"><i class="roof"></i><i class="window"></i><i class="body"></i><i class="shine"></i><i class="wheel left"></i><i class="wheel right"></i></span>'}
@@ -74,9 +75,8 @@ function selectCar(id){
  },460);
 }
 function finishBoarding(car,bayIndex,count){
- busy=false;
- if(count>0){say('Your '+car.color.name.toLowerCase()+' car is ready. Driving away!');const el=$('bays').children[bayIndex];if(el){el.style.transition='transform .45s,opacity .45s';el.style.transform='translateY(-45px) scale(.7)';el.style.opacity='0'}setTimeout(()=>{bays[bayIndex]=null;render();checkProgress()},480)}
- else{say('No matching passengers boarded. Choose another colour.');checkProgress()}
+ if(count>0){say('Your '+car.color.name.toLowerCase()+' car is ready. Driving away!');const el=$('bays').children[bayIndex];if(el){el.style.transition='transform .45s,opacity .45s';el.style.transform='translateY(-45px) scale(.7)';el.style.opacity='0'}setTimeout(()=>{bays[bayIndex]=null;busy=false;render();checkProgress()},480)}
+ else{busy=false;say('No matching passengers boarded. Choose another colour.');render();checkProgress()}
 }
 function checkProgress(){
  if(queue.length===0){complete=true;$('dialogTitle').textContent='Level '+level+' complete!';$('dialogText').textContent='All passengers have found their rides. You earned '+score+' points.';$('dialogButton').textContent='Play next level';$('overlay').classList.add('show');$('next').hidden=false;return}
