@@ -4,69 +4,96 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#f8edf4">
-<meta name="description" content="Mary's Parking Game — a car escape puzzle.">
+<meta name="description" content="Mary's Parking Game — an endless car escape puzzle.">
 <title>Mary's Parking Game</title>
 <style>
 :root{--ink:#594d65;--muted:#94869b;--pink:#f3b8d2;--mint:#a9d9c2;--blue:#b8d5f2;--yellow:#f5df9e;--lilac:#d1c1ed;--aqua:#b5e2df;--rose:#efb5b9;--peach:#f5c9ad}
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:ui-rounded,"Trebuchet MS",system-ui,sans-serif;color:var(--ink);background:#f8edf4}body{display:flex;justify-content:center;overscroll-behavior:none}.app{width:min(100%,560px);min-height:100svh;padding:env(safe-area-inset-top) 14px calc(16px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px}.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 4px 1px}.brand{font-weight:1000;font-size:clamp(21px,6vw,29px);letter-spacing:-1px;color:#65546c}.brand span{color:#c47da5}.level{background:#fff9;border:0;border-radius:14px;padding:7px 11px;font-weight:900;font-size:12px}.stats{display:flex;gap:8px}.stat{background:#fff8;border:0;border-radius:12px;padding:6px 9px;font-size:11px;font-weight:800;color:var(--muted)}.stat strong{color:var(--ink);font-size:14px;margin-left:3px}.panel{background:#fff9fc;border:0;border-radius:21px;box-shadow:none;padding:12px}.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.section-head h2{font-size:12px;margin:0;font-weight:1000;letter-spacing:.3px}.hint{font-size:10px;color:var(--muted);font-weight:700}.queue-panel{padding:10px 12px}.queue{min-height:43px;display:flex;align-items:center;gap:5px;overflow:hidden;padding:2px}.person{flex:0 0 23px;height:34px;position:relative;display:flex;align-items:flex-end;justify-content:center}.person .head{position:absolute;top:0;width:15px;height:15px;border-radius:50%;background:var(--c)}.person .body{width:19px;height:19px;border-radius:9px 9px 5px 5px;background:var(--c)}.queue-count{font-size:10px;color:var(--muted);font-weight:800;white-space:nowrap}.board-panel{padding:12px;background:#eee5f1}.board{width:min(100%,430px);aspect-ratio:1;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(6,1fr);gap:4px;padding:5px;background:#e5dbe9;border-radius:17px;position:relative;touch-action:manipulation}.cell{background:#f8f3f8;border-radius:7px}.car{--c:var(--mint);position:absolute;display:flex;align-items:center;justify-content:center;border:0;padding:0;background:var(--c);border-radius:10px;box-shadow:inset 0 -3px 0 #00000012,0 2px 3px #65546c20;cursor:pointer;z-index:2;transition:transform .25s,opacity .25s;touch-action:manipulation}.car:focus-visible{outline:2px solid #9c6c91;outline-offset:2px}.car.horizontal{height:calc((100% - 10px - 20px)/6);min-height:24px}.car.vertical{width:calc((100% - 10px - 20px)/6);min-width:24px;writing-mode:vertical-rl}.car .window{position:absolute;background:#edf8fcaa;border-radius:4px}.car.horizontal .window{left:25%;right:25%;top:18%;bottom:18%}.car.vertical .window{top:25%;bottom:25%;left:18%;right:18%}.car .arrow{position:relative;z-index:1;color:#51485c;font-size:clamp(13px,3.8vw,19px);font-weight:1000;text-shadow:0 1px #fff9;line-height:1}.car.exiting{opacity:0;transform:scale(.65)}.board-exit{position:absolute;font-size:16px;color:#b58ba9;z-index:1}.board-exit.right{right:-12px;top:50%;transform:translateY(-50%)}.board-exit.left{left:-12px;top:50%;transform:translateY(-50%)}.board-exit.top{top:-13px;left:50%;transform:translateX(-50%)}.board-exit.bottom{bottom:-13px;left:50%;transform:translateX(-50%)}.message{text-align:center;min-height:20px;font-size:11px;font-weight:800;color:#76647d;padding:1px 5px}.controls{display:grid;grid-template-columns:1fr 1fr;gap:9px}.btn{border:0;border-radius:14px;padding:12px;color:#fff;background:#d98fb5;box-shadow:0 3px 0 #bd769a;font:900 12px inherit;cursor:pointer}.btn.secondary{background:#fff;color:#665a70;box-shadow:0 3px 0 #ead8e4}.btn:active{transform:translateY(2px);box-shadow:none}.overlay{position:fixed;inset:0;background:#78677b88;display:none;align-items:center;justify-content:center;padding:20px;z-index:5}.overlay.show{display:flex}.dialog{width:min(100%,340px);background:#fff;border-radius:23px;padding:23px;text-align:center;box-shadow:0 15px 45px #80647b33}.dialog h2{margin:0 0 7px;font-size:23px}.dialog p{color:var(--muted);line-height:1.45;font-size:13px}.dialog .btn{width:100%;margin-top:7px}.small{font-size:9px;color:#94869b;text-align:center}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:ui-rounded,"Trebuchet MS",system-ui,sans-serif;color:var(--ink);background:#f8edf4}body{display:flex;justify-content:center;overscroll-behavior:none}.app{width:min(100%,560px);min-height:100svh;padding:env(safe-area-inset-top) 14px calc(16px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px}.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 4px 1px}.brand{font-weight:1000;font-size:clamp(21px,6vw,29px);letter-spacing:-1px;color:#65546c}.brand span{color:#c47da5}.level{background:#fff9;border:0;border-radius:14px;padding:7px 11px;font-weight:900;font-size:12px}.stats{display:flex;gap:8px}.stat{background:#fff8;border:0;border-radius:12px;padding:6px 9px;font-size:11px;font-weight:800;color:var(--muted)}.stat strong{color:var(--ink);font-size:14px;margin-left:3px}.panel{background:#fff9fc;border:0;border-radius:21px;box-shadow:none;padding:12px}.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.section-head h2{font-size:12px;margin:0;font-weight:1000;letter-spacing:.3px}.hint{font-size:10px;color:var(--muted);font-weight:700}.queue-panel{padding:10px 12px}.queue-window{height:43px;overflow:hidden;position:relative}.queue-track{display:flex;align-items:center;gap:8px;width:max-content;animation:queueTravel 18s linear infinite}.queue-window:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,#fff9fc 0%,transparent 7%,transparent 93%,#fff9fc 100%)}.person{flex:0 0 24px;height:36px;position:relative;display:flex;align-items:flex-end;justify-content:center;animation:personBob 1.4s ease-in-out infinite}.person:nth-child(3n){animation-delay:-.5s}.person .head{position:absolute;top:0;width:15px;height:15px;border-radius:50%;background:var(--c)}.person .body{width:20px;height:21px;border-radius:9px 9px 5px 5px;background:var(--c)}@keyframes queueTravel{from{transform:translateX(0)}to{transform:translateX(-35%)}}@keyframes personBob{50%{transform:translateY(-4px)}}.queue-count{font-size:10px;color:var(--muted);font-weight:800;white-space:nowrap}.board-panel{padding:12px;background:#eee5f1}.board{width:min(100%,430px);aspect-ratio:1;margin:0 auto;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-template-rows:repeat(6,minmax(0,1fr));gap:4px;padding:5px;background:#e5dbe9;border-radius:17px;position:relative;touch-action:manipulation}.cell{background:#f8f3f8;border-radius:7px;position:relative}.cell.car-cell{background:#f2eaf2}.car{--c:var(--mint);position:absolute;width:82%;height:82%;left:9%;top:9%;border:0;padding:0;background:transparent;cursor:pointer;z-index:2;touch-action:manipulation;display:flex;align-items:center;justify-content:center;transition:opacity .25s,transform .25s}.car:focus-visible{outline:2px solid #9c6c91;outline-offset:1px;border-radius:8px}.car-body{position:absolute;inset:17% 7%;border-radius:8px;background:var(--c);box-shadow:inset 0 -2px 0 #00000012,0 2px 3px #65546c20}.car .roof{position:absolute;z-index:1;inset:27% 25%;border-radius:5px;background:#ffffff70;border:1px solid #ffffff9c}.car .wheel{position:absolute;z-index:2;width:17%;height:24%;background:#4d4a58;border-radius:3px}.car .wheel.a{left:12%;top:8%}.car .wheel.b{right:12%;top:8%}.car .wheel.c{left:12%;bottom:8%}.car .wheel.d{right:12%;bottom:8%}.car .arrow{position:relative;z-index:3;font-size:clamp(10px,2.7vw,15px);font-weight:1000;color:#51485c;text-shadow:0 1px 2px #fff;line-height:1}.car.east .car-body,.car.west .car-body{inset:24% 7%;border-radius:8px}.car.north .car-body,.car.south .car-body{inset:7% 24%;border-radius:8px}.car.north .roof,.car.south .roof{inset:25% 29%}.car.exiting{opacity:0;transform:scale(.35)}.board-exit{position:absolute;font-size:15px;color:#b58ba9;z-index:1}.board-exit.right{right:-11px;top:50%;transform:translateY(-50%)}.board-exit.left{left:-11px;top:50%;transform:translateY(-50%)}.board-exit.top{top:-12px;left:50%;transform:translateX(-50%)}.board-exit.bottom{bottom:-12px;left:50%;transform:translateX(-50%)}.message{text-align:center;min-height:20px;font-size:11px;font-weight:800;color:#76647d;padding:1px 5px}.controls{display:grid;grid-template-columns:1fr;gap:9px}.btn{border:0;border-radius:14px;padding:12px;color:#665a70;background:#fff;box-shadow:0 3px 0 #ead8e4;font:900 12px inherit;cursor:pointer}.btn:active{transform:translateY(2px);box-shadow:none}.overlay{position:fixed;inset:0;background:#78677b55;display:none;align-items:center;justify-content:center;padding:20px;z-index:5}.overlay.show{display:flex}.dialog{width:min(100%,320px);background:#fff;border-radius:23px;padding:20px;text-align:center;box-shadow:0 15px 45px #80647b33;animation:pop .3s ease-out}.dialog h2{margin:0 0 7px;font-size:22px}.dialog p{color:var(--muted);line-height:1.45;font-size:13px}.dialog .btn{width:100%;margin-top:7px;background:#d98fb5;color:#fff;box-shadow:0 3px 0 #bd769a}@keyframes pop{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}.small{font-size:9px;color:#94869b;text-align:center}
 @media(min-width:480px){.app{gap:13px}.board{gap:5px;padding:6px}.panel{padding:14px}}
+@media(prefers-reduced-motion:reduce){.queue-track,.person{animation:none}}
 </style>
 </head>
 <body>
 <main class="app">
 <header class="topbar"><div class="brand">Mary's <span>Parking</span> Game</div><div class="level" id="level">LEVEL 1</div></header>
 <div class="stats"><div class="stat">CARS LEFT <strong id="left">0</strong></div><div class="stat">PASSENGERS <strong id="passengers">0</strong></div><div class="stat">SCORE <strong id="score">0</strong></div></div>
-<section class="panel queue-panel"><div class="section-head"><h2>PASSENGERS</h2><span class="queue-count" id="queueCount">Waiting to leave</span></div><div class="queue" id="queue"></div></section>
-<section class="panel board-panel"><div class="section-head"><h2>PARKING AREA</h2><span class="hint">Tap a car with a clear exit</span></div><div class="board" id="board" aria-label="Car parking puzzle board"></div></section>
+<section class="panel queue-panel"><div class="section-head"><h2>PASSENGERS</h2><span class="queue-count" id="queueCount">On the move</span></div><div class="queue-window"><div class="queue-track" id="queue"></div></div></section>
+<section class="panel board-panel"><div class="section-head"><h2 id="shapeName">CAT PARKING</h2><span class="hint">Tap a car when its exit is clear</span></div><div class="board" id="board" aria-label="Six by six car parking puzzle board"></div></section>
 <div class="message" id="message" aria-live="polite">Find a car with a clear path and tap to let it leave.</div>
-<div class="controls"><button class="btn secondary" id="reset">↻ Restart level</button><button class="btn" id="next" hidden>Next level →</button></div>
-<div class="small">Clear the way, one car at a time.</div>
+<div class="controls"><button class="btn" id="reset">↻ Restart this level</button></div>
+<div class="small">Keep clearing the way. Your next parking pattern is waiting.</div>
 </main>
-<div class="overlay" id="overlay"><div class="dialog"><h2 id="dialogTitle">Level complete!</h2><p id="dialogText">Every car has left the parking area.</p><button class="btn" id="dialogButton">Play next level</button></div></div>
+<div class="overlay" id="overlay"><div class="dialog"><h2 id="dialogTitle">Lovely driving!</h2><p id="dialogText">The next parking shape is ready.</p><button class="btn" id="dialogButton">Continue</button></div></div>
 <script>
 (()=>{
 const palette=['#a9d9c2','#f3b8d2','#b8d5f2','#f5df9e','#d1c1ed','#b5e2df','#efb5b9','#f5c9ad'];
-const layouts=[
-[{x:0,y:0,d:'E'},{x:2,y:0,d:'S'},{x:4,y:0,d:'S'},{x:0,y:2,d:'E'},{x:2,y:2,d:'E'},{x:4,y:2,d:'S'},{x:1,y:4,d:'W'},{x:3,y:4,d:'E'},{x:5,y:4,d:'S'}],
-[{x:1,y:0,d:'S'},{x:3,y:0,d:'S'},{x:5,y:0,d:'S'},{x:0,y:2,d:'E'},{x:2,y:2,d:'E'},{x:4,y:2,d:'E'},{x:1,y:4,d:'W'},{x:3,y:4,d:'W'},{x:5,y:4,d:'S'}],
-[{x:0,y:0,d:'E'},{x:2,y:0,d:'E'},{x:4,y:0,d:'S'},{x:0,y:2,d:'N'},{x:2,y:2,d:'E'},{x:4,y:2,d:'S'},{x:1,y:4,d:'W'},{x:3,y:4,d:'W'},{x:5,y:4,d:'S'}],
-[{x:1,y:0,d:'S'},{x:3,y:0,d:'S'},{x:0,y:1,d:'E'},{x:2,y:2,d:'E'},{x:4,y:2,d:'S'},{x:0,y:4,d:'E'},{x:2,y:4,d:'E'},{x:4,y:4,d:'E'}]
+// One compact car sits inside each occupied square. Each pattern is a recognizable 6×6 silhouette.
+const patterns=[
+{name:'CAT PARKING',cells:[[0,0],[5,0],[0,1],[1,1],[4,1],[5,1],[0,2],[1,2],[2,2],[3,2],[4,2],[5,2],[1,3],[2,3],[3,3],[4,3],[1,4],[4,4],[1,5],[4,5]]},
+{name:'HEART PARKING',cells:[[0,0],[1,0],[4,0],[5,0],[0,1],[1,1],[2,1],[3,1],[4,1],[5,1],[1,2],[2,2],[3,2],[4,2],[1,3],[2,3],[3,3],[4,3],[2,4],[3,4],[2,5],[3,5]]},
+{name:'FLOWER PARKING',cells:[[2,0],[3,0],[1,1],[2,1],[3,1],[4,1],[0,2],[1,2],[2,2],[3,2],[4,2],[5,2],[1,3],[2,3],[3,3],[4,3],[2,4],[3,4],[2,5],[3,5]]},
+{name:'STAR PARKING',cells:[[2,0],[3,0],[2,1],[3,1],[0,2],[1,2],[2,2],[3,2],[4,2],[5,2],[1,3],[2,3],[3,3],[4,3],[0,4],[2,4],[3,4],[5,4],[1,5],[4,5]]}
 ];
 const arrows={E:'➜',W:'⬅',N:'⬆',S:'⬇'};
-let level=1,score=0,cars=[],initial=[],passengers=0;
+let level=1,score=0,cars=[],initial=[],passengers=0,transitioning=false;
 const $=id=>document.getElementById(id);
-function makeCars(){
- const layout=layouts[(level-1)%layouts.length],used=new Set();
- cars=layout.map((p,i)=>({id:i+1,x:p.x,y:p.y,d:p.d,color:palette[(i+level-1)%palette.length],active:true}));
- // Keep each two-cell car in bounds and remove any accidental overlaps from a layout.
- cars=cars.filter(c=>{const cells=occupied(c);if(cells.some(k=>used.has(k)))return false;cells.forEach(k=>used.add(k));return true});
- initial=JSON.parse(JSON.stringify(cars));passengers=cars.length;render();
+const directions=['E','W','N','S'];
+function buildLevel(){
+ const pattern=patterns[(level-1)%patterns.length];
+ cars=pattern.cells.map(([x,y],i)=>({id:i+1,x,y,d:directions[(i*3+Math.floor(i/4)+level)%4],color:palette[(i+level-1)%palette.length],active:true}));
+ // Rotate the direction sequence by level while keeping each car in its own square.
+ initial=JSON.parse(JSON.stringify(cars));passengers=cars.length;transitioning=false;
+ $('shapeName').textContent=pattern.name;$('overlay').classList.remove('show');
+ $('message').textContent='Find a car with a clear path and tap to let it leave.';render();
 }
-function occupied(c){return c.d==='E'||c.d==='W'?[c.y*6+c.x,c.y*6+c.x+1]:[c.y*6+c.x,(c.y+1)*6+c.x]}
+function occupied(c){return c.y*6+c.x}
 function isClear(car){
- const own=new Set(occupied(car));let x=car.x,y=car.y;
- if(car.d==='E'){x=car.x+2;for(;x<6;x++)if(blocked(x,y,own))return false}
- if(car.d==='W'){x=car.x-1;for(;x>=0;x--)if(blocked(x,y,own))return false}
- if(car.d==='S'){y=car.y+2;for(;y<6;y++)if(blocked(x,y,own))return false}
- if(car.d==='N'){y=car.y-1;for(;y>=0;y--)if(blocked(x,y,own))return false}
+ const x=car.x,y=car.y;
+ if(car.d==='E'){for(let xx=x+1;xx<6;xx++)if(blocked(xx,y,car))return false}
+ if(car.d==='W'){for(let xx=x-1;xx>=0;xx--)if(blocked(xx,y,car))return false}
+ if(car.d==='S'){for(let yy=y+1;yy<6;yy++)if(blocked(x,yy,car))return false}
+ if(car.d==='N'){for(let yy=y-1;yy>=0;yy--)if(blocked(x,yy,car))return false}
  return true;
 }
-function blocked(x,y,own){const cell=y*6+x;return cars.some(c=>c.active&&occupied(c).includes(cell)&&!own.has(cell))}
+function blocked(x,y,car){return cars.some(other=>other.active&&other.id!==car.id&&other.x===x&&other.y===y)}
 function render(){
- $('board').innerHTML='';for(let i=0;i<36;i++){const cell=document.createElement('div');cell.className='cell';$('board').append(cell)}
- ['top','right','bottom','left'].forEach(side=>{const e=document.createElement('span');e.className='board-exit '+side;e.textContent=({top:'↓',right:'→',bottom:'↑',left:'←'})[side];$('board').append(e)});
- const board=$('board'),inner=board.clientWidth||400,gap=4,pad=5,cell=(inner-pad*2-gap*5)/6;
- cars.filter(c=>c.active).forEach(c=>{const b=document.createElement('button');const horizontal=c.d==='E'||c.d==='W';b.className='car '+(horizontal?'horizontal':'vertical');b.style.setProperty('--c',c.color);b.style.left=(pad+c.x*(cell+gap))+'px';b.style.top=(pad+c.y*(cell+gap))+'px';b.style.width=(horizontal?cell*2+gap:cell)+'px';b.style.height=(horizontal?cell:cell*2+gap)+'px';b.style.background=c.color;b.innerHTML='<i class="window"></i><span class="arrow">'+arrows[c.d]+'</span>';b.setAttribute('aria-label','Car '+c.id+', direction '+c.d+', '+(isClear(c)?'exit clear':'exit blocked'));b.addEventListener('click',()=>moveCar(c.id,b));board.append(b)});
+ const board=$('board');board.innerHTML='';
+ for(let i=0;i<36;i++){const cell=document.createElement('div');cell.className='cell';board.append(cell)}
+ ['top','right','bottom','left'].forEach(side=>{const e=document.createElement('span');e.className='board-exit '+side;e.textContent=({top:'↓',right:'→',bottom:'↑',left:'←'})[side];board.append(e)});
+ cars.filter(c=>c.active).forEach(c=>{
+  const b=document.createElement('button');b.className='car '+({E:'east',W:'west',N:'north',S:'south'}[c.d]);b.style.setProperty('--c',c.color);
+  b.style.gridColumn=(c.x+1);b.style.gridRow=(c.y+1);b.style.position='absolute';
+  // Place the button precisely within its own grid square, leaving a clear margin around the car.
+  b.style.left='calc(5px + '+c.x+' * (100% - 10px - 20px) / 6 + ' + '+(c.x*4/6)+'px)';
+  b.style.top='calc(5px + '+c.y+' * (100% - 10px - 20px) / 6 + ' + '+(c.y*4/6)+'px)';
+  b.innerHTML='<i class="car-body"></i><i class="roof"></i><i class="wheel a"></i><i class="wheel b"></i><i class="wheel c"></i><i class="wheel d"></i><span class="arrow">'+arrows[c.d]+'</span>';
+  b.setAttribute('aria-label','Car '+c.id+', points '+c.d+', '+(isClear(c)?'exit clear':'exit blocked'));
+  b.addEventListener('click',()=>moveCar(c.id,b));board.append(b);
+ });
  $('left').textContent=cars.filter(c=>c.active).length;$('passengers').textContent=passengers;$('score').textContent=score;
- $('queue').innerHTML='';for(let i=0;i<Math.min(passengers,12);i++){const p=document.createElement('div');p.className='person';p.style.setProperty('--c',palette[i%palette.length]);p.innerHTML='<i class="head"></i><i class="body"></i>';$('queue').append(p)}
- $('queueCount').textContent=passengers+' waiting';$('level').textContent='LEVEL '+level;
+ const track=$('queue');track.innerHTML='';
+ const count=Math.max(12,Math.min(32,passengers+8));
+ for(let i=0;i<count;i++){const p=document.createElement('div');p.className='person';p.style.setProperty('--c',palette[(i+level)%palette.length]);p.innerHTML='<i class="head"></i><i class="body"></i>';track.append(p)}
+ $('queueCount').textContent=passengers+' riding along';$('level').textContent='LEVEL '+level;
 }
-function moveCar(id,el){const car=cars.find(c=>c.id===id&&c.active);if(!car)return;if(!isClear(car)){$('message').textContent='That car is blocked. Move the car in front first.';return}
- el.classList.add('exiting');car.active=false;score+=10;passengers=Math.max(0,passengers-1);$('message').textContent='Nice move! The car found a clear way out.';setTimeout(()=>{render();if(cars.every(c=>!c.active))complete()},260)}
-function complete(){$('dialogTitle').textContent='Level '+level+' complete!';$('dialogText').textContent='You cleared every car and earned '+score+' points.';$('dialogButton').textContent='Play next level';$('overlay').classList.add('show');$('next').hidden=false}
-function nextLevel(){level++;$('overlay').classList.remove('show');$('next').hidden=true;$('message').textContent='Find a car with a clear path and tap to let it leave.';makeCars()}
-function restart(){cars=JSON.parse(JSON.stringify(initial));passengers=cars.length;$('overlay').classList.remove('show');$('next').hidden=true;$('message').textContent='Find a car with a clear path and tap to let it leave.';render()}
-$('reset').addEventListener('click',restart);$('next').addEventListener('click',nextLevel);$('dialogButton').addEventListener('click',nextLevel);window.addEventListener('resize',render);makeCars();
+function moveCar(id,el){
+ if(transitioning)return;
+ const car=cars.find(c=>c.id===id&&c.active);if(!car)return;
+ if(!isClear(car)){$('message').textContent='This car is blocked. Clear the cars in front of its arrow first.';return}
+ el.classList.add('exiting');car.active=false;score+=10;passengers=Math.max(0,passengers-1);
+ $('message').textContent='Clear road! The car is driving away.';$('left').textContent=cars.filter(c=>c.active).length;$('passengers').textContent=passengers;$('score').textContent=score;
+ setTimeout(()=>{render();if(cars.every(c=>!c.active))completeLevel()},280);
+}
+function completeLevel(){
+ if(transitioning)return;transitioning=true;
+ $('dialogTitle').textContent='Shape cleared!';$('dialogText').textContent='You cleared every car. Moving on to the next parking shape…';
+ $('dialogButton').textContent='Continue';$('overlay').classList.add('show');
+ // Automatically continue so the game feels like one continuous journey.
+ setTimeout(()=>{if(transitioning)nextLevel()},1100);
+}
+function nextLevel(){level++;buildLevel()}
+function restart(){transitioning=false;cars=JSON.parse(JSON.stringify(initial));passengers=cars.length;$('overlay').classList.remove('show');$('message').textContent='Find a car with a clear path and tap to let it leave.';render()}
+$('reset').addEventListener('click',restart);$('dialogButton').addEventListener('click',nextLevel);window.addEventListener('resize',render);buildLevel();
 })();
 </script>
 </body></html>
