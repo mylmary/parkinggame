@@ -57,7 +57,24 @@ function isClear(car){
  return true;
 }
 function blocked(x,y,car){return cars.some(other=>other.active&&other.id!==car.id&&other.x===x&&other.y===y)}
+function ensureMoveAvailable(){
+ const active=cars.filter(c=>c.active);
+ if(!active.length||active.some(isClear))return;
+ // A finite group of cars always has an outermost car in at least one row or column.
+ // If a generated arrow layout ever traps every car, point the easiest car along a verified clear lane.
+ let choice=null;
+ for(const car of active){
+  for(const d of directions){
+   const previous=car.d;car.d=d;const clear=isClear(car);car.d=previous;
+   if(!clear)continue;
+   const distance=d==='E'?5-car.x:d==='W'?car.x:d==='S'?5-car.y:car.y;
+   if(!choice||distance<choice.distance)choice={car,d,distance};
+  }
+ }
+ if(choice){choice.car.d=choice.d;$('message').textContent='A clear route is available. Follow the arrow to keep going.'}
+}
 function render(){
+ ensureMoveAvailable();
  const board=$('board');board.innerHTML='';
  for(let i=0;i<36;i++){const cell=document.createElement('div');cell.className='cell';board.append(cell)}
  ['top','right','bottom','left'].forEach(side=>{const e=document.createElement('span');e.className='board-exit '+side;e.textContent=({top:'↓',right:'→',bottom:'↑',left:'←'})[side];board.append(e)});
